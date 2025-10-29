@@ -2,6 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permisos necesarios -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Configuración de la aplicación -->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -10,19 +21,45 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AIIA">
+        android:theme="@style/Theme.AIIA"
+        android:usesCleartextTraffic="true"   <!-- Permite conexión HTTP local si no usas HTTPS -->
+        tools:targetApi="34">
+
+        <!-- Actividades existentes -->
         <activity
             android:name=".CoverActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
-            android:exported="true"/>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true" />
+
+        <!-- Nueva actividad para cámara y detección facial -->
+        <activity
+            android:name=".ui.camera.CameraActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AIIA.NoActionBar" />
+
+        <!-- Servicio en primer plano para rondas del robot Temi -->
+        <service
+            android:name=".robot.TemiPatrolService"
+            android:exported="false"
+            android:foregroundServiceType="location|mediaPlayback" />
+
+        <!-- (Opcional) receptor si en el futuro usas alertas o broadcasts -->
+        <!--
+        <receiver
+            android:name=".robot.TemiReceiver"
+            android:enabled="true"
+            android:exported="false" />
+        -->
+
     </application>
 
 </manifest>

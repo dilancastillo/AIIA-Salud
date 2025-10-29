@@ -5,15 +5,94 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="16dp"
     tools:context=".MainActivity">
 
+    <!-- Texto original conservado -->
     <TextView
+        android:id="@+id/txtHello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/btnStartCamera"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Título principal -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="AIIA Salud – Atención Geriátrica con Temi"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:textColor="@android:color/black"
+        app:layout_constraintTop_toBottomOf="@id/txtHello"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="12dp" />
+
+    <!-- Botón para abrir la cámara y reconocimiento facial -->
+    <Button
+        android:id="@+id/btnStartCamera"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Iniciar monitoreo facial"
+        android:drawableStart="@android:drawable/ic_menu_camera"
+        android:drawablePadding="8dp"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Botón para iniciar rondas automáticas del robot Temi -->
+    <Button
+        android:id="@+id/btnStartPatrol"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Iniciar rondas de Temi"
+        android:drawableStart="@android:drawable/ic_menu_compass"
+        android:drawablePadding="8dp"
+        android:backgroundTint="@color/teal_700"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toBottomOf="@id/btnStartCamera"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Etiqueta para mostrar estado del sistema -->
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Estado: Temi en espera"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="16sp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/btnStartPatrol"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="12dp" />
+
+    <!-- Contenedor dinámico (para fragmentos, cámara, o contenido adicional) -->
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F7F7F7"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/txtStatus"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
