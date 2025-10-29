@@ -12,6 +12,7 @@ class CoverActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityCoverBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupBottomBar(binding.bottomActions)
 
         binding.btnEmpezar.setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))

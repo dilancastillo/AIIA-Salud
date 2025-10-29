@@ -4,6 +4,8 @@
     <string name="cover_title">AIIA – Asistente de Hospitalización</string>
     <string name="cover_description">Prototipo de reconocimiento facial en Temi V3 para identificar pacientes en cama y brindar una atención oportuna, empática y segura.</string>
     <string name="start">Conoce mis servicios</string>
+    <string name="back">Atrás</string>
+    <string name="home">Inicio</string>
     <string name="exit">Salir</string>
     <string name="confirm_exit_title">Salir de la app</string>
     <string name="confirm_exit_msg">¿Seguro que quieres salir?</string>

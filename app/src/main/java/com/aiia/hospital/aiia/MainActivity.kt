@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity(), Robot.TtsListener {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setupBottomBar(binding.bottomActions)
 
         binding.btnStartTour.setOnClickListener {
             val message = """
