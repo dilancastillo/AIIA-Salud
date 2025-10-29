@@ -6,7 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import android.content.Intentx
+import android.content.Intent
 import com.robotemi.sdk.Robot
 import com.robotemi.sdk.TtsRequest
 import com.aiia.hospital.aiia.databinding.ActivityMainBinding
@@ -22,7 +22,14 @@ class MainActivity : AppCompatActivity(), Robot.TtsListener {
         setContentView(binding.root)
 
         binding.btnStartTour.setOnClickListener {
-            Toast.makeText(this, getString(R.string.coming_soon), Toast.LENGTH_SHORT).show()
+            val message = """
+                Iniciando recorrido de hospitalización.
+                Me acercaré cama por cama para verificar a cada paciente.
+                Por favor, mantengan los pasillos despejados.
+            """.trimIndent()
+
+            val req = TtsRequest.create(message, true)
+            Robot.getInstance().speak(req)
         }
 
         binding.btnSelectPatient.setOnClickListener {

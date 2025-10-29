@@ -16,17 +16,16 @@ class SelectPatientActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val patients = listOf(
-            Patient("p001", "Ana Gómez", R.mipmap.ic_launcher),
-            Patient("p002", "Carlos Pérez", R.mipmap.ic_launcher),
-            Patient("p003", "María Rodríguez", R.mipmap.ic_launcher),
-            Patient("p004", "Julián Restrepo", R.mipmap.ic_launcher)
+            Patient("p001", "Ana Gómez", R.drawable.ana_gomez),
+            Patient("p002", "Carlos Pérez", R.drawable.carlos_perez),
+            Patient("p003", "María Rodríguez", R.drawable.maria_rodriguez),
+            Patient("p004", "Julián Restrepo", R.drawable.julian_restrepo)
         )
 
-        val adapter = PatientAdapter(patients) { p ->
+        binding.rvPatients.adapter = PatientAdapter(patients) { p ->
             Toast.makeText(this, "Seleccionado: ${p.name}", Toast.LENGTH_SHORT).show()
         }
 
-        binding.rvPatients.adapter = adapter
         binding.rvPatients.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
