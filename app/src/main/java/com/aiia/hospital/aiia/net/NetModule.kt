@@ -1,4 +1,4 @@
-package com.aiia.salud.net
+package com.aiia.hospital.aiia.net
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

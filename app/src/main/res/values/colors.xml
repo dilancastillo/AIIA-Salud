@@ -1,9 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#19223E</color>
-    <color name="primary_dark">#3056A3</color>
-    <color name="accent">#2196F3</color>
-    <color name="background">#FFFFFF</color>
-    <color name="text_primary">#19223E</color>
-    <color name="text_secondary">#3056A3</color>
+    <!-- Paleta de colores principal -->
+    <color name="primary">#2E86DE</color>
+    <color name="primary_dark">#1B4F72</color>
+    <color name="accent">#00B894</color>
+    <color name="background">#F8F9FA</color>
+    <color name="text_primary">#212121</color>
+
+    <!-- Paleta Material Design base -->
+    <color name="purple_200">#BB86FC</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="teal_700">#018786</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+
+    <!-- Colores secundarios del proyecto -->
+    <color name="aiia_primary">#2E86DE</color>
+    <color name="aiia_secondary">#00B894</color>
+    <color name="aiia_background">#F8F9FA</color>
+
+    <!-- Colores de texto -->
+    <color name="text_secondary">#757575</color>
+    <color name="text_hint">#9E9E9E</color>
+    <color name="text_disabled">#BDBDBD</color>
+
+    <!-- Colores dinámicos compatibles con botones -->
+    <color name="material_dynamic_primary70">#6200EE</color>
+    <color name="material_dynamic_secondary70">#018786</color>
 </resources>

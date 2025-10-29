@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.aiia.hospital.aiia.databinding.ActivityCoverBinding
+import com.aiia.hospital.aiia.ui.MainActivity
 
 class CoverActivity : AppCompatActivity() {
     private lateinit var binding: ActivityCoverBinding

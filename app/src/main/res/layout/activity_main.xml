@@ -1,26 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
-    <!-- Texto original conservado -->
+    <!-- Vista de cámara (PreviewView de CameraX) -->
+    <androidx.camera.view.PreviewView
+        android:id="@+id/previewView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Título superior -->
     <TextView
         android:id="@+id/txtHello"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toTopOf="@+id/btnStartCamera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:text="¡Hola, bienvenido!"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="16dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp" />
 
-    <!-- Título principal -->
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="0dp"
@@ -29,14 +40,13 @@
         android:textStyle="bold"
         android:textSize="20sp"
         android:textColor="@android:color/black"
+        android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/txtHello"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="12dp" />
+        android:layout_marginTop="4dp" />
 
-    <!-- Botón para abrir la cámara y reconocimiento facial -->
+    <!-- Botón: iniciar cámara -->
     <Button
         android:id="@+id/btnStartCamera"
         android:layout_width="0dp"
@@ -44,15 +54,14 @@
         android:text="Iniciar monitoreo facial"
         android:drawableStart="@android:drawable/ic_menu_camera"
         android:drawablePadding="8dp"
-        android:backgroundTint="@color/purple_500"
+        android:backgroundTint="@color/material_dynamic_primary70"
         android:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/txtTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginTop="8dp" />
 
-    <!-- Botón para iniciar rondas automáticas del robot Temi -->
+    <!-- Botón: patrullaje Temi -->
     <Button
         android:id="@+id/btnStartPatrol"
         android:layout_width="0dp"
@@ -60,21 +69,20 @@
         android:text="Iniciar rondas de Temi"
         android:drawableStart="@android:drawable/ic_menu_compass"
         android:drawablePadding="8dp"
-        android:backgroundTint="@color/teal_700"
+        android:backgroundTint="@color/material_dynamic_secondary70"
         android:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@id/btnStartCamera"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginTop="8dp" />
 
-    <!-- Etiqueta para mostrar estado del sistema -->
+    <!-- Estado emocional -->
     <TextView
-        android:id="@+id/txtStatus"
+        android:id="@+id/tvEmotion"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Estado: Temi en espera"
-        android:textColor="@android:color/darker_gray"
+        android:text="Emoción: --"
+        android:textColor="@android:color/holo_blue_dark"
         android:textSize="16sp"
         android:gravity="center"
         app:layout_constraintTop_toBottomOf="@id/btnStartPatrol"
@@ -82,7 +90,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="12dp" />
 
-    <!-- Contenedor dinámico (para fragmentos, cámara, o contenido adicional) -->
+    <!-- Icono info (placeholder de uso general) -->
+    <ImageView
+        android:id="@+id/imageInfo"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_dialog_info"
+        app:layout_constraintTop_toBottomOf="@id/tvEmotion"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Botón cerrar -->
+    <ImageButton
+        android:id="@+id/close"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Cerrar"
+        app:layout_constraintTop_toBottomOf="@id/tvEmotion"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="8dp" />
+
+    <!-- Contenedor dinámico (puedes usarlo para fragmentos u overlays) -->
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="0dp"
@@ -90,7 +120,7 @@
         android:background="#F7F7F7"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/txtStatus"
+        app:layout_constraintTop_toBottomOf="@id/imageInfo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

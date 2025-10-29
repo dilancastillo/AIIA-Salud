@@ -1,4 +1,4 @@
-package com.aiia.salud
+package com.aiia.hospital.aiia
 
 import android.app.Application
 import com.robotemi.sdk.Robot

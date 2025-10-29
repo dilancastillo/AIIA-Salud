@@ -1,4 +1,4 @@
-package com.aiia.salud.data
+package com.aiia.hospital.aiia.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

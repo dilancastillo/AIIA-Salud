@@ -1,106 +1,137 @@
-package com.aiia.salud.ui
+package com.aiia.hospital.aiia.ui.camera
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Size
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.aiia.salud.databinding.FragmentCameraBinding
-import com.aiia.salud.robot.EmotionActions
+import com.aiia.hospital.aiia.databinding.FragmentCameraBinding
+import com.aiia.hospital.aiia.robot.EmotionActions
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.*
 import com.robotemi.sdk.Robot
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 class CameraFragment : Fragment() {
 
-    private var _b: FragmentCameraBinding? = null
-    private val b get() = _b!!
-    private val robot by lazy { Robot.getInstance() }
+    private var _binding: FragmentCameraBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var patientId: String
-    private lateinit var room: String
+    private lateinit var cameraExecutor: ExecutorService
 
-    private val exec = Executors.newSingleThreadExecutor()
-    private var actions: EmotionActions? = null
-    private var throttleJob: Job? = null
+    // ✅ Instancia declarada para usar funcionalidades emocionales con Temi
+    private lateinit var emotionActions: EmotionActions
 
-    companion object {
-        fun new(patientId: String, room: String) = CameraFragment().apply {
-            arguments = Bundle().apply { putString("pid", patientId); putString("room", room) }
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentCameraBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        patientId = requireArguments().getString("pid")!!
-        room = requireArguments().getString("room")!!
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
-        FragmentCameraBinding.inflate(inflater, container, false).also { _b = it }.root
-
-    @SuppressLint("UnsafeOptInUsageError")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        actions = EmotionActions(requireContext(), robot, b.playerView)
-        val provider = ProcessCameraProvider.getInstance(requireContext())
-        provider.addListener({
-            val cameraProvider = provider.get()
-            val preview = Preview.Builder().build().also { it.setSurfaceProvider(b.preview.surfaceProvider) }
+        super.onViewCreated(view, savedInstanceState)
 
-            val analyzer = ImageAnalysis.Builder()
-                .setTargetResolution(Size(1280, 720))
+        cameraExecutor = Executors.newSingleThreadExecutor()
+
+        // ✅ Inicializa EmotionActions (Temi + sonido + comportamiento)
+        emotionActions = EmotionActions(
+            ctx = requireContext(),
+            robot = Robot.getInstance(),
+            playerView = binding.playerView
+        )
+
+        startCamera()
+    }
+
+    private fun startCamera() {
+        val cameraProviderFuture = ProcessCameraProvider.getInstance(requireContext())
+        cameraProviderFuture.addListener({
+            val cameraProvider = cameraProviderFuture.get()
+
+            val preview = Preview.Builder().build().also {
+                it.setSurfaceProvider(binding.preview.surfaceProvider)
+            }
+
+            val options = FaceDetectorOptions.Builder()
+                .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
+                .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_ALL)
+                .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+                .build()
+
+            val faceDetector = FaceDetection.getClient(options)
+
+            val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                .build().also {
-                    it.setAnalyzer(exec, ::analyze)
-                }
+                .build()
 
-            val selector = CameraSelector.DEFAULT_FRONT_CAMERA
-            cameraProvider.unbindAll()
-            cameraProvider.bindToLifecycle(viewLifecycleOwner, selector, preview, analyzer)
+            imageAnalyzer.setAnalyzer(cameraExecutor) { imageProxy ->
+                processImageProxy(imageProxy, faceDetector)
+            }
+
+            val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
+
+            try {
+                cameraProvider.unbindAll()
+                cameraProvider.bindToLifecycle(
+                    viewLifecycleOwner, cameraSelector, preview, imageAnalyzer
+                )
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
         }, ContextCompat.getMainExecutor(requireContext()))
     }
 
-    private fun analyze(img: ImageProxy) {
-        val media = img.image ?: return img.close()
-        val image = InputImage.fromMediaImage(media, img.imageInfo.rotationDegrees)
-        val opts = FaceDetectorOptions.Builder()
-            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_ACCURATE)
-            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
-            .build()
-        FaceDetection.getClient(opts).process(image)
-            .addOnSuccessListener { faces -> handleFaces(faces) }
-            .addOnCompleteListener { img.close() }
+    private fun processImageProxy(imageProxy: ImageProxy, detector: FaceDetector) {
+        val mediaImage = imageProxy.image
+        if (mediaImage != null) {
+            val image = InputImage.fromMediaImage(mediaImage, imageProxy.imageInfo.rotationDegrees)
+            detector.process(image)
+                .addOnSuccessListener { faces ->
+                    handleFaces(faces)
+                }
+                .addOnFailureListener {
+                    it.printStackTrace()
+                }
+                .addOnCompleteListener {
+                    imageProxy.close()
+                }
+        }
     }
 
     private fun handleFaces(faces: List<Face>) {
-        if (faces.isEmpty()) return
-        val f = faces.first()
-        val smile = f.smilingProbability ?: 0f
+        if (faces.isNotEmpty()) {
+            val face = faces.first()
+            val smileProb = face.smilingProbability ?: -1f
 
-        val emotion = when {
-            smile >= 0.6f -> "happy"
-            smile <= 0.3f -> "sad"
-            else -> "neutral"
-        }
+            // 🔹 Simula ID del paciente y habitación
+            val patientId = "P001"
+            val room = "Habitación 2"
 
-        // Anti-rebote: máximo 1 acción cada 4 s
-        if (throttleJob?.isActive == true) return
-        throttleJob = viewLifecycleOwner.lifecycleScope.launch {
-            actions?.onEmotion(patientId, room, emotion)
-            delay(4000)
+            // 🔍 Evaluación simple de emoción
+            val emotion = when {
+                smileProb > 0.6f -> "happy"
+                smileProb in 0.3f..0.6f -> "neutral"
+                else -> "sad"
+            }
+
+            // ✅ Ejecuta comportamiento Temi
+            emotionActions.onEmotion(patientId, room, emotion)
         }
     }
 
     override fun onDestroyView() {
-        actions?.release()
-        _b = null
         super.onDestroyView()
+        _binding = null
+        cameraExecutor.shutdown()
+        // ✅ Libera recursos de video/Temi
+        emotionActions.release()
     }
 }

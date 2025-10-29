@@ -1,4 +1,4 @@
-package com.aiia.salud.net
+package com.aiia.hospital.aiia.net
 
 import retrofit2.http.Body
 import retrofit2.http.POST

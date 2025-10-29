@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_camera_root"
+    android:id="@+id/camera_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
     tools:context=".ui.camera.CameraFragment">
 
-    <!-- Vista previa de la cámara (CameraX) -->
+    <!-- Vista previa de la cámara -->
     <androidx.camera.view.PreviewView
         android:id="@+id/preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:keepScreenOn="true" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Reproductor de video (ExoPlayer) para videos motivacionales / relajantes -->
+    <!-- Reproductor de video (ExoPlayer) -->
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/playerView"
         android:layout_width="match_parent"
         android:layout_height="220dp"
         android:layout_gravity="bottom"
         android:background="#111"
-        android:use_controller="false"
         android:keepScreenOn="true"
+        app:use_controller="false"
         tools:ignore="MissingClass" />
 
-    <!-- Estado o mensaje temporal (por ejemplo: 'Detectando rostro...') -->
+    <!-- Texto de estado -->
     <TextView
-        android:id="@+id/txtDetectionStatus"
+        android:id="@+id/tvStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Detectando rostro..."
+        android:text="Analizando rostro..."
         android:textColor="@android:color/white"
-        android:textStyle="bold"
-        android:layout_gravity="center_horizontal|top"
-        android:layout_marginTop="20dp"
-        android:background="#66000000"
-        android:padding="8dp"
-        android:visibility="visible" />
+        android:textSize="16sp"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="250dp"
+        tools:ignore="HardcodedText" />
 
 </FrameLayout>

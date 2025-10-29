@@ -1,57 +1,44 @@
-package com.aiia.salud.ui
+package com.aiia.hospital.aiia.ui
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import com.aiia.salud.databinding.ActivityMainBinding
-import com.aiia.salud.robot.TemiPatrolService
-import com.robotemi.sdk.Robot
-import com.robotemi.sdk.listeners.OnRobotReadyListener
-import com.robotemi.sdk.TtsRequest
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import com.aiia.hospital.aiia.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity(), OnRobotReadyListener {
+class MainActivity : AppCompatActivity() {
 
-    private lateinit var b: ActivityMainBinding
-    private val robot by lazy { Robot.getInstance() }
-
-    private val reqPerms = registerForActivityResult(RequestMultiplePermissions()) { _ -> }
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        b = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(b.root)
+        enableEdgeToEdge()  // Habilita el modo pantalla completa sin bordes
 
-        robot.addOnRobotReadyListener(this)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        b.btnStartCamera.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(b.container.id, CameraFragment.new("PACIENTE_001", "Habitación 101"))
-                .commit()
+        // Acceso a vistas mediante viewBinding
+        val previewView = binding.previewView       // Preview de cámara
+        val emotionText = binding.tvEmotion         // Texto para emoción detectada
+        val infoImage = binding.imageInfo           // Icono de información
+        val closeButton = binding.close             // Botón cerrar
+
+        // Aquí iría la lógica para activar cámara, mostrar emoción, cerrar, etc.
+    }
+
+    // Extensión para aplicar diseño edge-to-edge
+    private fun AppCompatActivity.enableEdgeToEdge() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+
+        WindowInsetsControllerCompat(window, window.decorView).let { controller ->
+            controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            controller.hide(
+                android.view.WindowInsets.Type.statusBars() or
+                android.view.WindowInsets.Type.navigationBars()
+            )
         }
-
-        b.btnStartPatrol.setOnClickListener {
-            startForegroundService(Intent(this, TemiPatrolService::class.java))
-        }
-
-        askPerms()
-    }
-
-    private fun askPerms() {
-        val need = arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
-            .any { ContextCompat.checkSelfPermission(this, it) != PackageManager.PERMISSION_GRANTED }
-        if (need) reqPerms.launch(arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO))
-    }
-
-    override fun onRobotReady(isReady: Boolean) {
-        if (isReady) robot.speak(TtsRequest.create("Listo para iniciar monitoreo.", false))
-    }
-
-    override fun onDestroy() {
-        robot.removeOnRobotReadyListener(this)
-        super.onDestroy()
     }
 }

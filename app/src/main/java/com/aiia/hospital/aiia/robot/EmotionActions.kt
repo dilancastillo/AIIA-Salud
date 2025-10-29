@@ -1,10 +1,10 @@
-package com.aiia.salud.robot
+package com.aiia.hospital.aiia.robot
 
 import android.content.Context
-import com.aiia.salud.data.AppDb
-import com.aiia.salud.data.Observation
-import com.aiia.salud.net.AlertReq
-import com.aiia.salud.net.NetModule
+import com.aiia.hospital.aiia.data.AppDb
+import com.aiia.hospital.aiia.data.Observation
+import com.aiia.hospital.aiia.net.AlertReq
+import com.aiia.hospital.aiia.net.NetModule
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ui.PlayerView
 import com.robotemi.sdk.Robot
@@ -61,7 +61,7 @@ class EmotionActions(
 
     private fun saveLocal(patientId: String, emotion: String) {
         io.launch {
-            AppDb.get(ctx).observation().add(
+            AppDb.getInstance(ctx).observation().add(
                 Observation(patientId = patientId, timestamp = System.currentTimeMillis(), emotion = emotion, note = null)
             )
         }
